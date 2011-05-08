@@ -2,25 +2,38 @@
 //  MyKeePassAppDelegate.h
 //  MyKeePass
 //
-//  Created by Qiang Yu on 12/4/09.
-//  Copyright __MyCompanyName__ 2009. All rights reserved.
+//  Created by Qiang Yu on 3/3/10.
+//  Copyright Qiang Yu 2010. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import "MainViewController.h"
-#import "DatabaseWrapper.h"
+#import "KdbViewController.h"
+#import "PasswordViewController.h"
+#import "FileManager.h"
 
 @interface MyKeePassAppDelegate : NSObject <UIApplicationDelegate> {
-    UIWindow *window;
-	MainViewController * _mainViewController;
-	DatabaseWrapper * _databaseWrapper;
+	FileManager * _fileManager;
+	
+	MainViewController * _mainView;
+    KdbViewController * _kdbView;
+	
+	UIViewController * _currentViewController;
+	
+	UIWindow *window;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet MainViewController * _mainViewController;
-@property(nonatomic, retain) DatabaseWrapper * _databaseWrapper;
+@property (nonatomic, readonly) FileManager * _fileManager;
+@property (nonatomic, retain) MainViewController * _mainView;
+@property (nonatomic, retain) KdbViewController * _kdbView;
+@property (nonatomic, retain) UIViewController * _currentViewController;
 
--(void)switchViews;
++(MyKeePassAppDelegate *)delegate;
++(UIWindow *)getWindow;
 
+-(void)showKdb;
+-(void)showMainView;
+-(BOOL)isEditable;
 @end
 

@@ -330,7 +330,7 @@
 				F7DDD04C115DB13500FD4EE3 /* MyKeePassAppDelegate.h */,
 				F7DDD04D115DB13500FD4EE3 /* MyKeePassAppDelegate.m */,
 			);
-			name = Classes;
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		F7DDCFE0115DB13500FD4EE3 /* ThirdParty */ = {
@@ -352,6 +352,7 @@
 				F7DDCFE2115DB13500FD4EE3 /* HTTP */,
 			);
 			name = CocoaHttpServer;
+			path = ThirdParty/CocoaHttpServer;
 			sourceTree = "<group>";
 		};
 		F7DDCFE2115DB13500FD4EE3 /* HTTP */ = {
@@ -366,7 +367,7 @@
 				F7DDCFE9115DB13500FD4EE3 /* HTTPAuthenticationRequest.h */,
 				F7DDCFEA115DB13500FD4EE3 /* HTTPAuthenticationRequest.m */,
 			);
-			name = HTTP;
+			path = HTTP;
 			sourceTree = "<group>";
 		};
 		F7DDCFEB115DB13500FD4EE3 /* TCP */ = {
@@ -375,7 +376,7 @@
 				F7DDCFEC115DB13500FD4EE3 /* AsyncSocket.h */,
 				F7DDCFED115DB13500FD4EE3 /* AsyncSocket.m */,
 			);
-			name = TCP;
+			path = TCP;
 			sourceTree = "<group>";
 		};
 		F7DDCFEE115DB13500FD4EE3 /* Categories */ = {
@@ -388,7 +389,7 @@
 				F7DDCFF3115DB13500FD4EE3 /* DDData.h */,
 				F7DDCFF4115DB13500FD4EE3 /* DDData.m */,
 			);
-			name = Categories;
+			path = Categories;
 			sourceTree = "<group>";
 		};
 		F7DDCFF5115DB13500FD4EE3 /* Classes */ = {
@@ -399,7 +400,7 @@
 				F7DDCFF8115DB13500FD4EE3 /* localhostAddresses.h */,
 				F7DDCFF9115DB13500FD4EE3 /* localhostAddresses.m */,
 			);
-			name = Classes;
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		F7DDCFFA115DB13500FD4EE3 /* ASIHTTPRequest */ = {
@@ -422,6 +423,7 @@
 				F7DDD009115DB13500FD4EE3 /* ASIAuthenticationDialog.m */,
 			);
 			name = ASIHTTPRequest;
+			path = ThirdParty/ASIHTTPRequest;
 			sourceTree = "<group>";
 		};
 		F7DDD00A115DB13500FD4EE3 /* Tapku */ = {
@@ -437,6 +439,7 @@
 				F7DDD012115DB13500FD4EE3 /* TKLabelTextFieldCell.m */,
 			);
 			name = Tapku;
+			path = ThirdParty/Tapku;
 			sourceTree = "<group>";
 		};
 		F7DDD013115DB13500FD4EE3 /* UI */ = {
@@ -457,7 +460,7 @@
 				F7DDD018115DB13500FD4EE3 /* MultiLineTableViewCellStyle2.h */,
 				F7DDD019115DB13500FD4EE3 /* MultiLineTableViewCellStyle2.m */,
 			);
-			name = UI;
+			path = UI;
 			sourceTree = "<group>";
 		};
 		F7DDD01A115DB13500FD4EE3 /* Kdb */ = {
@@ -486,7 +489,7 @@
 				F7DDD02F115DB13500FD4EE3 /* OptionViewController.h */,
 				F7DDD030115DB13500FD4EE3 /* OptionViewController.m */,
 			);
-			name = Kdb;
+			path = Kdb;
 			sourceTree = "<group>";
 		};
 		F7DDD031115DB13500FD4EE3 /* Main */ = {
@@ -513,7 +516,7 @@
 				F7DDD044115DB13500FD4EE3 /* FileManagerOperation.h */,
 				F7DDD045115DB13500FD4EE3 /* FileManagerOperation.m */,
 			);
-			name = Main;
+			path = Main;
 			sourceTree = "<group>";
 		};
 		F7DDD07F115DB15B00FD4EE3 /* images */ = {
@@ -535,7 +538,7 @@
 				F7DDD08A115DB15B00FD4EE3 /* kdb.png */,
 				F7DDD08B115DB15B00FD4EE3 /* kdbx.png */,
 			);
-			name = images;
+			path = images;
 			sourceTree = "<group>";
 		};
 		F7DDD0A4115DB21E00FD4EE3 /* Products */ = {
@@ -575,7 +578,11 @@
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "MyKeePass" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
 			projectDirPath = "";
 			projectReferences = (
