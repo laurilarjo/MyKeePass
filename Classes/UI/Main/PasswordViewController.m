@@ -11,6 +11,7 @@
 #import "MyKeePassAppDelegate.h"
 #import "ActivityView.h"
 #import "FileManagerOperation.h"
+#import "FileManager.h"
 
 @interface PasswordViewController(PrivateMethods)
 -(void)showError:(NSString *)message;
@@ -136,7 +137,18 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return _isRemote?2:1;
+    if (!_isRemote) {
+        return 1;
+    }
+    else {
+        if ([[MyKeePassAppDelegate delegate]._fileManager bIsDropBoxFileName:_filename]){
+            return 1;
+        }
+        else {
+            return 2;
+        }
+    }
+    return 1;
 }
 
 
@@ -193,8 +205,13 @@
 			_op._useCache = _switch.on;
 			_op._username = _rusername._field.text;
 			_op._userpass = _rpassword._field.text;
-			_op._domain = _rdomain._field.text;			
-			[_op performSelectorInBackground:@selector(openRemoteFile) withObject:nil];
+			_op._domain = _rdomain._field.text;	
+            if (![[MyKeePassAppDelegate delegate]._fileManager bIsDropBoxFileName:_filename]) {
+                [_op performSelectorInBackground:@selector(openRemoteFile) withObject:nil];
+            }
+            else {
+                [_op openDropboxRemoteFile]; 
+            }
 		}				
 	}else{ // it is reopen, we verify the password directly
 		NSString * password = _password._field.text;
@@ -224,6 +241,8 @@
 		[msg release];
 	}else if([[exception name] isEqualToString:@"DownloadError"]){
 		[self showError:NSLocalizedString(@"Cannot download the file", @"Cannot download the file")];
+	}else if([[exception name] isEqualToString:@"DownloadErrorWithUserInfo"]){
+		[self showError:[NSString stringWithFormat:@"%@.%@", NSLocalizedString(@"Cannot download the file", @"Cannot download the file"),[[exception userInfo] valueForKey:@"error"]]];
 	}else if ([[exception name] isEqualToString:@"RemoteAuthenticationError"]){
 		[self showError:NSLocalizedString(@"Server authentication error", @"Server authentication error")];
 	}else{

@@ -54,7 +54,7 @@
 -(void)openRemoteFile{
 	NSAutoreleasePool * pool = nil;	
 	@try{
-		pool = [[NSAutoreleasePool alloc] init];		
+		pool = [[NSAutoreleasePool alloc] init];
 		[[MyKeePassAppDelegate delegate]._fileManager readRemoteFile:_filename withPassword:_password useCached:_useCache username:_username userpass:_userpass domain:_domain];
 		[_delegate performSelectorOnMainThread:@selector(fileOperationSuccess) withObject:nil waitUntilDone:NO];
 	}@catch(NSException * exception){
@@ -64,6 +64,16 @@
 		[pool release];
 	}
 	
+}
+
+-(void)openDropboxRemoteFile{
+	@try{
+        [MyKeePassAppDelegate delegate]._fileManager._passwordViewController = self._delegate;
+        [[MyKeePassAppDelegate delegate]._fileManager readRemoteFile:_filename withPassword:_password useCached:_useCache username:_username userpass:_userpass domain:_domain];
+        //[_delegate performSelectorOnMainThread:@selector(fileOperationSuccess) withObject:nil waitUntilDone:NO];
+	}@catch(NSException * exception){
+		[_delegate performSelectorOnMainThread:@selector(fileOperationFailureWithException:) withObject:exception waitUntilDone:NO];
+	}
 }
 
 -(void)save{

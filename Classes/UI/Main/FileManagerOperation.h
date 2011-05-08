@@ -41,6 +41,7 @@
 
 -(void)openLocalFile;
 -(void)openRemoteFile;
+-(void)openDropboxRemoteFile;
 -(void)save;
 
 @end
