@@ -16,6 +16,8 @@
 #import "RenameFileViewController.h"
 #import "RenameRemoteFileViewController.h"
 #import "FileUploadViewController.h"
+#import "DropboxSDK.h"
+#import "DropboxFileViewController.h"
 
 #define KDB1_SUFFIX ".kdb"
 #define KDB2_SUFFIX ".kdbx"
@@ -23,10 +25,12 @@
 #define NEW_FILE_BUTTON 0
 #define IMPORT_DESKTOP_BUTTON 1
 #define IMPORT_WEBSERVER_BUTTON 2
+#define IMPORT_DROPBOX_BUTTON 3
 
 @interface FileViewController(PrivateMethods)
 -(void)newFile;
 -(void)downloadFile;
+-(void)dropboxFile;
 -(void)uploadFile;
 @end
 
@@ -78,14 +82,18 @@
 		[nav release];
 	}else{
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissModalViewCancel:) name:@"DismissModalViewCancel" object:nil];	
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissModalViewOK:) name:@"DismissModalViewOK" object:nil];		
-		RenameRemoteFileViewController * renameFile = [[RenameRemoteFileViewController alloc]initWithStyle:UITableViewStyleGrouped];
-		renameFile._name = [_remoteFiles objectAtIndex:indexPath.row - [_files count]];
-		renameFile._url = [[MyKeePassAppDelegate delegate]._fileManager getURLForRemoteFile:renameFile._name];
-		UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:renameFile];
-		[self presentModalViewController:nav animated:YES];		
-		[renameFile release];
-		[nav release];		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissModalViewOK:) name:@"DismissModalViewOK" object:nil];
+        
+        NSString *filename = [_remoteFiles objectAtIndex:indexPath.row - [_files count]];
+        if (![[MyKeePassAppDelegate delegate]._fileManager bIsDropBoxFileName:filename]) {
+            RenameRemoteFileViewController * renameFile = [[RenameRemoteFileViewController alloc]initWithStyle:UITableViewStyleGrouped];
+            renameFile._name = [_remoteFiles objectAtIndex:indexPath.row - [_files count]];
+            renameFile._url = [[MyKeePassAppDelegate delegate]._fileManager getURLForRemoteFile:renameFile._name];
+            UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:renameFile];
+            [self presentModalViewController:nav animated:YES];		
+            [renameFile release];
+            [nav release];
+        }
 	}
 }
 
@@ -118,7 +126,13 @@
 		//cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 		NSString * filename = [_remoteFiles objectAtIndex:indexPath.row-[_files count]];
 		UIImageView * iv = cell.imageView;
-		iv.image = [UIImage imageNamed:@"http.png"];
+		if ([[MyKeePassAppDelegate delegate]._fileManager  bIsDropBoxFileName:filename]) {
+            iv.image = [UIImage imageNamed:@"dropbox.png"];
+            cell.editingAccessoryType =UITableViewCellEditingStyleNone;
+        }
+        else {
+            iv.image = [UIImage imageNamed:@"http.png"];
+        }
 		cell.textLabel.text = filename;
 	}
     return cell;
@@ -184,6 +198,16 @@
 	[nav release];
 }
 
+-(void)dropboxFile{
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissModalViewCancel:) name:@"DismissModalViewCancel" object:nil];	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissModalViewOK:) name:@"DismissModalViewOK" object:nil];	
+    DropboxFileViewController *aDropboxFileViewController = [[DropboxFileViewController alloc]initWithNibName:@"DropboxFileView" bundle:nil];
+	UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:aDropboxFileViewController];
+	[self presentModalViewController:nav animated:YES];
+    [aDropboxFileViewController release];
+	[nav release];
+}
+
 -(void)dismissModalViewCancel:(NSNotification *)notification{
 	[self dismissModalViewControllerAnimated:YES];	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -210,6 +234,9 @@
 	}else if([[notification object] isKindOfClass:[FileUploadViewController class]]){
 		[[MyKeePassAppDelegate delegate]._fileManager getKDBFiles:_files];
 		[self.tableView reloadData];
+	}else if ([[notification object] isKindOfClass:[DropboxFileViewController class]]){
+        [[MyKeePassAppDelegate delegate]._fileManager getRemoteFiles:_remoteFiles];
+        [self.tableView reloadData];
 	}
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -220,7 +247,8 @@
 										   cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") destructiveButtonTitle:nil 
 										   otherButtonTitles:NSLocalizedString(@"New KDB 1.0 File", @"New KDB 1.0 File"), 
 															 NSLocalizedString(@"Upload From Desktop", @"Upload From Desktop"), 	
-															 NSLocalizedString(@"Download From WWW", @"Download From WWW"), nil];
+															 NSLocalizedString(@"Download From WWW", @"Download From WWW"),
+                                                             NSLocalizedString(@"Download From Dropbox", @"Download From Dropbox"), nil];
 	[as showInView:[MyKeePassAppDelegate getWindow]];
 }
 
@@ -238,6 +266,10 @@
 			[self downloadFile];
 			break;
 		}
+        case IMPORT_DROPBOX_BUTTON:{
+            [self dropboxFile];
+            break;
+        }
 	}
 }
 

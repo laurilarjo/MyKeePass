@@ -55,6 +55,8 @@
 		485276801376992B007CDA4F /* db_link_header@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 485276541376992B007CDA4F /* db_link_header@2x.png */; };
 		485276811376992B007CDA4F /* db_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 485276551376992B007CDA4F /* db_logo.png */; };
 		485276821376992B007CDA4F /* db_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 485276561376992B007CDA4F /* db_logo@2x.png */; };
+		4852769913769EBA007CDA4F /* DropboxFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4852769813769EBA007CDA4F /* DropboxFileViewController.m */; };
+		4852769B13769EDA007CDA4F /* DropboxFileView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4852769A13769EDA007CDA4F /* DropboxFileView.xib */; };
 		F716539E115DBD090017DC12 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = F716539D115DBD090017DC12 /* Default.png */; };
 		F78F24AF10E4740C0073C213 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F78F24AE10E4740C0073C213 /* CFNetwork.framework */; };
 		F7DA414B10CB60FC00F1D072 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7DA414A10CB60FC00F1D072 /* QuartzCore.framework */; };
@@ -245,6 +247,9 @@
 		485276541376992B007CDA4F /* db_link_header@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "db_link_header@2x.png"; sourceTree = "<group>"; };
 		485276551376992B007CDA4F /* db_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = db_logo.png; sourceTree = "<group>"; };
 		485276561376992B007CDA4F /* db_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "db_logo@2x.png"; sourceTree = "<group>"; };
+		4852769713769EBA007CDA4F /* DropboxFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DropboxFileViewController.h; sourceTree = "<group>"; };
+		4852769813769EBA007CDA4F /* DropboxFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DropboxFileViewController.m; sourceTree = "<group>"; };
+		4852769A13769EDA007CDA4F /* DropboxFileView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DropboxFileView.xib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* MyKeePass-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MyKeePass-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		F716539D115DBD090017DC12 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		F78F24AE10E4740C0073C213 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -434,6 +439,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4852769A13769EDA007CDA4F /* DropboxFileView.xib */,
 				F7DDD09A115DB18200FD4EE3 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* MyKeePass-Info.plist */,
 			);
@@ -770,6 +776,8 @@
 				F7DDD043115DB13500FD4EE3 /* FileUploadViewController.m */,
 				F7DDD044115DB13500FD4EE3 /* FileManagerOperation.h */,
 				F7DDD045115DB13500FD4EE3 /* FileManagerOperation.m */,
+				4852769713769EBA007CDA4F /* DropboxFileViewController.h */,
+				4852769813769EBA007CDA4F /* DropboxFileViewController.m */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -902,6 +910,7 @@
 				485276801376992B007CDA4F /* db_link_header@2x.png in Resources */,
 				485276811376992B007CDA4F /* db_logo.png in Resources */,
 				485276821376992B007CDA4F /* db_logo@2x.png in Resources */,
+				4852769B13769EDA007CDA4F /* DropboxFileView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -995,6 +1004,7 @@
 				485276751376992B007CDA4F /* NSURL+MPURLParameterAdditions.m in Sources */,
 				485276761376992B007CDA4F /* NSURLResponse+Encoding.m in Sources */,
 				485276771376992B007CDA4F /* NSString+Dropbox.m in Sources */,
+				4852769913769EBA007CDA4F /* DropboxFileViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

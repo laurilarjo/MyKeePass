@@ -15,9 +15,12 @@
 #import "ASIHTTPRequest.h"
 #import "MyKeePassAppDelegate.h"
 #import "ActivityView.h"
+#import "DropboxSDK.h"
 
 @interface FileManager(PrivateMethods)
 -(id<KdbTree>) readFileHelp:(NSString *) fileName withPassword:(NSString *)password;
+-(BOOL)bIsDropBoxFileName:(NSString *)filename;
+-(BOOL)bIsDropBoxURL:(NSString *)url;
 @end
 
 
@@ -41,7 +44,7 @@ static NSString * DOWNLOAD_CONFIG;
 
 +(void)initialize{
     if ( self == [FileManager class] ) {
-#if TARGET_IPHONE_SIMULATOR		
+#if TARGET_IPHONE_SIMULATOR_2		
 		DATA_DIR = @"/Volumes/Users/qiang/Desktop/";		
 		DOWNLOAD_DIR = DATA_DIR;
 #else
@@ -238,6 +241,18 @@ static NSString * DOWNLOAD_CONFIG;
 	}@finally {
 		[writer release];
 	}
+}
+
+-(BOOL)bIsDropBoxFileName:(NSString *)filename {
+    NSString *url = [self getURLForRemoteFile:filename];
+    return [self bIsDropBoxURL:url];
+}
+
+-(BOOL)bIsDropBoxURL:(NSString *) url {
+    if ([url hasPrefix:@"dropbox://"]){
+        return YES;
+    }
+    return NO;
 }
 
 @end
