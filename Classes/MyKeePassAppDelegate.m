@@ -8,6 +8,8 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "MyKeePassAppDelegate.h"
+#import "DropboxSDK.h"
+#import "DropboxAPIKeys.h"
 
 @implementation MyKeePassAppDelegate
 @synthesize window;
@@ -17,6 +19,12 @@
 @synthesize _currentViewController;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {    
+    DBSession* dbSession = [[[DBSession alloc]
+                             initWithConsumerKey:@DROPBOX_CONSUMER_KEY
+                             consumerSecret:@DROPBOX_CONSUMER_SECRET]
+                            autorelease];
+    [DBSession setSharedSession:dbSession];
+
 	//initialize the file manager
 	_fileManager = [[FileManager alloc]init];
 	
