@@ -353,7 +353,6 @@ static NSString * DOWNLOAD_CONFIG;
         if ([[[metadata lastModifiedDate] laterDate:localFileDate] isEqual:localFileDate]) {
             @try{
                 id<KdbTree> tree = [self readFileHelp:self._cacheFileName withPassword:self._password];
-                tree = nil;
                 [self._passwordViewController performSelector:@selector(fileOperationSuccess) withObject:nil];        
             }@catch(NSException * exception){
                 [self._passwordViewController performSelector:@selector(fileOperationFailureWithException:) withObject:exception];

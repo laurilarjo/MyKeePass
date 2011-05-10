@@ -286,6 +286,8 @@
 		[msg release];
 	}else if([[exception name] isEqualToString:@"DownloadError"]){
 		[self showError:NSLocalizedString(@"Cannot download the file", @"Cannot download the file")];
+	}else if([[exception name] isEqualToString:@"MetadataErrorWithUserInfo"]){
+		[self showError:NSLocalizedString(@"Cannot download the file", @"Cannot download the file")];
 	}else if([[exception name] isEqualToString:@"DownloadErrorWithUserInfo"]){
 		[self showError:[NSString stringWithFormat:@"%@.%@", NSLocalizedString(@"Cannot download the file", @"Cannot download the file"),[[exception userInfo] valueForKey:@"error"]]];
 	}else if ([[exception name] isEqualToString:@"RemoteAuthenticationError"]){
