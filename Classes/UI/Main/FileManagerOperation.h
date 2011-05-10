@@ -27,6 +27,7 @@
 	NSString * _domain;
 	
 	BOOL _useCache;
+    BOOL _checkUpdate;
 }
 
 @property(nonatomic, retain) NSObject<FileManagerOperationDelegate> * _delegate;
@@ -36,6 +37,8 @@
 @property(nonatomic, retain) NSString * _userpass;
 @property(nonatomic, retain) NSString * _domain;
 @property(nonatomic, assign) BOOL _useCache;
+@property(nonatomic, assign) BOOL _checkUpdate;
+
 
 -(id)initWithDelegate:(id<FileManagerOperationDelegate>)delegate;
 

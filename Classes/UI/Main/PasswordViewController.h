@@ -22,9 +22,11 @@
 	ActivityView * _av;
 	UIButton * _ok;
 	UIButton * _cancel;
-	UISwitch * _switch;	
+	UISwitch * _switch;
+	UISwitch * _switchCheckUpdate;
 	TextFieldCell * _password;
 	UITableViewCell * _useCache;
+    UITableViewCell *_checkUpdate;
 	TextFieldCell * _rusername;
 	TextFieldCell * _rpassword;
 	TextFieldCell * _rdomain;
@@ -38,9 +40,11 @@
 @property(nonatomic, retain) UIButton * _ok;
 @property(nonatomic, retain) UIButton * _cancel;
 @property(nonatomic, retain) UISwitch * _switch;
+@property(nonatomic, retain) UISwitch * _switchCheckUpdate;
 
 @property(nonatomic, retain) TextFieldCell * _password;
 @property(nonatomic, retain) UITableViewCell * _useCache;
+@property(nonatomic, retain) UITableViewCell * _checkUpdate;
 @property(nonatomic, retain) TextFieldCell * _rusername;
 @property(nonatomic, retain) TextFieldCell * _rpassword;
 @property(nonatomic, retain) TextFieldCell * _rdomain;

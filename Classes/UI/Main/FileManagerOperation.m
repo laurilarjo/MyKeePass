@@ -18,6 +18,7 @@
 @synthesize _userpass;
 @synthesize _domain;
 @synthesize _useCache;
+@synthesize _checkUpdate;
 @synthesize _delegate;
 
 -(id)initWithDelegate:(id<FileManagerOperationDelegate>)delegate{
@@ -55,7 +56,7 @@
 	NSAutoreleasePool * pool = nil;	
 	@try{
 		pool = [[NSAutoreleasePool alloc] init];
-		[[MyKeePassAppDelegate delegate]._fileManager readRemoteFile:_filename withPassword:_password useCached:_useCache username:_username userpass:_userpass domain:_domain];
+		[[MyKeePassAppDelegate delegate]._fileManager readRemoteFile:_filename withPassword:_password useCached:_useCache checkUpdate:_checkUpdate username:_username userpass:_userpass domain:_domain];
 		[_delegate performSelectorOnMainThread:@selector(fileOperationSuccess) withObject:nil waitUntilDone:NO];
 	}@catch(NSException * exception){
 		[_delegate performSelectorOnMainThread:@selector(fileOperationFailureWithException:) withObject:exception waitUntilDone:NO];
@@ -69,7 +70,7 @@
 -(void)openDropboxRemoteFile{
 	@try{
         [MyKeePassAppDelegate delegate]._fileManager._passwordViewController = self._delegate;
-        [[MyKeePassAppDelegate delegate]._fileManager readRemoteFile:_filename withPassword:_password useCached:_useCache username:_username userpass:_userpass domain:_domain];
+        [[MyKeePassAppDelegate delegate]._fileManager readRemoteFile:_filename withPassword:_password useCached:_useCache checkUpdate:_checkUpdate username:_username userpass:_userpass domain:_domain];
         //[_delegate performSelectorOnMainThread:@selector(fileOperationSuccess) withObject:nil waitUntilDone:NO];
 	}@catch(NSException * exception){
 		[_delegate performSelectorOnMainThread:@selector(fileOperationFailureWithException:) withObject:exception waitUntilDone:NO];

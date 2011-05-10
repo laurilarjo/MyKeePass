@@ -25,9 +25,11 @@
 @synthesize _ok;
 @synthesize _cancel;
 @synthesize _switch;
+@synthesize _switchCheckUpdate;
 @synthesize _av;
 @synthesize _password;
 @synthesize _useCache;
+@synthesize _checkUpdate;
 @synthesize _rusername;
 @synthesize _rpassword;
 @synthesize _rdomain;
@@ -50,6 +52,7 @@
 	[_av release];
 	[_password release];
 	[_switch release];	
+    [_switchCheckUpdate release];
 	[_useCache release];
 	[_rusername release];
 	[_rpassword release];
@@ -93,10 +96,28 @@
 	_useCache.textLabel.textColor = [UIColor darkGrayColor];
 	_useCache.selectionStyle = UITableViewCellSelectionStyleNone;
 	
-	_switch = [[UISwitch alloc]initWithFrame:CGRectMake(195, 6, 94, 27)];
-	_switch.on = YES;
+	_checkUpdate = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+	_checkUpdate.textLabel.text = NSLocalizedString(@"Check for update", @"Check for update");
+	_checkUpdate.textLabel.font = [UIFont systemFontOfSize:17];
+	_checkUpdate.textLabel.textColor = [UIColor darkGrayColor];
+	_checkUpdate.selectionStyle = UITableViewCellSelectionStyleNone;
 
-	[_useCache.contentView addSubview:_switch];	
+	_switch = [[UISwitch alloc]initWithFrame:CGRectMake(195, 6, 94, 27)];
+    [_switch addTarget:self action:@selector(useCacheChanged:) forControlEvents:UIControlEventValueChanged];
+
+    _switch.on = YES;
+
+	_switchCheckUpdate = [[UISwitch alloc]initWithFrame:CGRectMake(195, 6, 94, 27)];
+    _switchCheckUpdate.on = NO;
+
+    if (![[MyKeePassAppDelegate delegate]._fileManager bCacheFileExists:_filename]) {
+        _switch.on = NO;
+        _switch.enabled = NO;
+        _switchCheckUpdate.enabled = NO;
+    }
+
+	[_useCache.contentView addSubview:_switch];
+	[_checkUpdate.contentView addSubview:_switchCheckUpdate];
 	
 	//set the footer;
 	UIView * container = [[UIView alloc]initWithFrame:CGRectMake(0,0,320,44)]; 
@@ -155,7 +176,17 @@
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	if(section==0){
-		return _isRemote?2:1;
+        if (!_isRemote) {
+            return 1;
+        }
+        else {
+            if ([[MyKeePassAppDelegate delegate]._fileManager bIsDropBoxFileName:_filename]){
+                return 3;
+            }
+            else {
+                return 2;
+            }
+        }
 	}else{
 		return 3;
 	}
@@ -164,10 +195,18 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {    
 	if([indexPath section]==0){
-		if([indexPath row]==0) 
-			return _password;
-		else 
-			return _useCache;
+        switch ([indexPath row]) {
+            case 0:
+                return _password;
+                break;
+            case 1:
+                return _useCache;
+                break;
+            case 2:
+                return _checkUpdate;
+            default:
+                break;
+        }
 	}else{
 		switch ([indexPath row]) {
 			case 0:
@@ -198,11 +237,13 @@
 		[self.view addSubview:_av];	
 		if(!_op) _op = [[FileManagerOperation alloc]initWithDelegate:self];		
 		_op._filename = _filename;				
-		_op._password = _password._field.text;					
+		_op._password = _password._field.text;
+        
 		if(!self._isRemote){
 			[_op performSelectorInBackground:@selector(openLocalFile) withObject:nil];
 		}else{
 			_op._useCache = _switch.on;
+            _op._checkUpdate = _switchCheckUpdate.on;
 			_op._username = _rusername._field.text;
 			_op._userpass = _rpassword._field.text;
 			_op._domain = _rdomain._field.text;	
@@ -224,6 +265,8 @@
 }
 
 -(void)fileOperationSuccess{
+    _switch.enabled = YES;
+    _switch.on = YES;
 	[_av removeFromSuperview];	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DismissModalViewOK" object:self];	
 }
@@ -232,6 +275,8 @@
 	[_av removeFromSuperview];
 	_ok.enabled = _cancel.enabled = YES;
 	_isLoading = NO;
+    _switch.enabled = YES;
+    _switch.on = YES;
 	
 	if([[exception name] isEqualToString:@"DecryptError"]){
 		[self showError:NSLocalizedString(@"Master password is not correct", @"Master password is not correct")];
@@ -264,6 +309,16 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
 	[self okClicked:_ok];
 	return NO;
+}
+
+-(void)useCacheChanged:(UISwitch *)sender {
+    if (!sender.on) {
+        _switchCheckUpdate.on = NO;
+        _switchCheckUpdate.enabled = NO;
+    }
+    else {
+        _switchCheckUpdate.enabled = YES;
+    }
 }
 
 @end

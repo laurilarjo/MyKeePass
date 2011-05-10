@@ -22,6 +22,7 @@
 	NSString * _filename;
 	NSString * _password;
     NSString * _cacheFileName;
+    NSString * _tmpFileName;
 	BOOL _dirty;
 	
 	id<KdbReader> _kdbReader;
@@ -38,6 +39,7 @@
 @property(nonatomic, retain) NSString * _filename;
 @property(nonatomic, retain) NSString * _password;
 @property(nonatomic, retain) NSString * _cacheFileName;
+@property(nonatomic, retain) NSString *_tmpFileName;
 @property(nonatomic, assign) BOOL _dirty;
 @property(nonatomic, retain) NSMutableDictionary * _remoteFiles;
 @property(nonatomic, retain) DBRestClient *_restClient;
@@ -46,7 +48,7 @@
 
 -(void)getKDBFiles:(NSMutableArray *)list;
 -(id<KdbTree>) readFile:(NSString *) fileName withPassword:(NSString *)password;
--(id<KdbTree>) readRemoteFile:(NSString *)filename withPassword:(NSString *)password useCached:(BOOL)useCached username:(NSString *)username userpass:(NSString *)userpass domain:(NSString *)domain;
+-(id<KdbTree>) readRemoteFile:(NSString *)filename withPassword:(NSString *)password useCached:(BOOL)useCached checkUpdate:(BOOL)checkUpdate username:(NSString *)username userpass:(NSString *)userpass domain:(NSString *)domain;
 
 -(void)deleteLocalFile:(NSString *)filename;
 
@@ -71,5 +73,6 @@
 
 -(BOOL)bIsDropBoxFileName:(NSString *)filename;
 -(BOOL)bIsDropBoxURL:(NSString *)url;
-
+-(BOOL)bCacheFileExists:(NSString *) filename;
+-(BOOL)bCacheFileExitsForURL:(NSString *) url;
 @end

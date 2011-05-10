@@ -19,6 +19,8 @@
 
 @interface FileManager(PrivateMethods)
 -(id<KdbTree>) readFileHelp:(NSString *) fileName withPassword:(NSString *)password;
+-(id<KdbTree>) downLoadFile:(NSString *)url cacheFileName:(NSString *)cacheFileName tmpFileName:(NSString *) tmpFileName withPassword:(NSString *)password username:(NSString *)username userpass:(NSString *)userpass domain:(NSString *)domain;
+-(id<KdbTree>) checkForUpdate:(NSString *)url cacheFileName:(NSString *)cacheFileName tmpFileName:(NSString *) tmpFileName withPassword:(NSString *)password username:(NSString *)username userpass:(NSString *)userpass domain:(NSString *)domain;
 @end
 
 
@@ -31,6 +33,7 @@
 @synthesize _remoteFiles;
 @synthesize _cacheFileName;
 @synthesize _restClient;
+@synthesize _tmpFileName;
 
 @synthesize _passwordViewController;
 
@@ -86,6 +89,8 @@ static NSString * DOWNLOAD_CONFIG;
 	[_password release];
 	[_filename release];
 	[_kdbReader release];
+    [_cacheFileName release];
+    [_tmpFileName release];
 	[super dealloc];
 }
 
@@ -123,7 +128,7 @@ static NSString * DOWNLOAD_CONFIG;
 	return [DOWNLOAD_DIR stringByAppendingPathComponent:filename];
 }
 
--(id<KdbTree>) readRemoteFile:(NSString *)filename withPassword:(NSString *)password useCached:(BOOL)useCached username:(NSString *)username userpass:(NSString *)userpass domain:(NSString *)domain{
+-(id<KdbTree>) readRemoteFile:(NSString *)filename withPassword:(NSString *)password useCached:(BOOL)useCached checkUpdate:(BOOL)checkUpdate username:(NSString *)username userpass:(NSString *)userpass domain:(NSString *)domain{
     id<KdbTree> tree = nil;
 	self._filename = filename;
 	
@@ -140,17 +145,50 @@ static NSString * DOWNLOAD_CONFIG;
 	NSFileManager * fileManager = [NSFileManager defaultManager];
 	
 	if([fileManager fileExistsAtPath:cacheFileName]&&useCached){
-		id<KdbTree> tree = [self readFileHelp:cacheFileName withPassword:password];
-		_editable = NO;
-        if ([self bIsDropBoxURL:url]) {
-            [self._passwordViewController performSelector:@selector(fileOperationSuccess) withObject:nil];
+        if (checkUpdate) {
+            tree = [self checkForUpdate:url cacheFileName:cacheFileName tmpFileName:tmp withPassword:password username:username userpass:userpass domain:domain];
         }
-		return tree;
+        else {
+            id<KdbTree> tree = [self readFileHelp:cacheFileName withPassword:password];
+            _editable = NO;
+            if ([self bIsDropBoxURL:url]) {
+                [self._passwordViewController performSelector:@selector(fileOperationSuccess) withObject:nil];
+            }
+            return tree;
+        }
+        return tree;
 	}
+    
+    tree = [self downLoadFile:url cacheFileName:cacheFileName tmpFileName:tmp withPassword:password username:username userpass:userpass domain:domain];
+    
+    return tree;
+}
+
+-(id<KdbTree>) checkForUpdate:(NSString *)url cacheFileName:(NSString *)cacheFileName tmpFileName:(NSString *) tmpFileName withPassword:(NSString *)password username:(NSString *)username userpass:(NSString *)userpass domain:(NSString *)domain {
+    id<KdbTree> tree = nil;
+
+    if (![self bIsDropBoxURL:url]) {
+        tree = [self downLoadFile:url cacheFileName:cacheFileName tmpFileName:tmpFileName withPassword:password username:username userpass:userpass domain:domain];
+        return tree;
+    }
+    else {
+        if (![[DBSession sharedSession] isLinked]) {
+            @throw [NSException exceptionWithName:@"RemoteAuthenticationError" reason:@"RemoteAuthenticationError" userInfo:nil];
+        }        
+        self._password = password;
+        self._tmpFileName = tmpFileName;
+        NSString *path = [url substringFromIndex:9];
+        [[self _restClient] loadMetadata:path];
+    }
+    return tree;
+}
+
+-(id<KdbTree>) downLoadFile:(NSString *)url cacheFileName:(NSString *)cacheFileName tmpFileName:(NSString *) tmpFileName withPassword:(NSString *)password username:(NSString *)username userpass:(NSString *)userpass domain:(NSString *)domain {
+    id<KdbTree> tree = nil;
     
     if (![self bIsDropBoxURL:url]) {
         ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:url]];
-        [request setDownloadDestinationPath:tmp];
+        [request setDownloadDestinationPath:tmpFileName];
         
         if([username length])
             [request setUsername:username];
@@ -172,7 +210,9 @@ static NSString * DOWNLOAD_CONFIG;
         }
         
         [[NSFileManager defaultManager] removeItemAtPath:cacheFileName error:nil];
-        [[NSFileManager defaultManager] moveItemAtPath:tmp toPath:cacheFileName error:nil];	
+        [[NSFileManager defaultManager] moveItemAtPath:tmpFileName toPath:cacheFileName error:nil];
+        _passwordViewController._switch.enabled = YES;
+        _passwordViewController._switch.on = YES;
         id<KdbTree> tree = [self readFileHelp:cacheFileName withPassword:password];
         return tree;
     }
@@ -182,7 +222,7 @@ static NSString * DOWNLOAD_CONFIG;
         }        
         self._password = password;
         NSString *path = [url substringFromIndex:9];
-        [[self _restClient] loadFile:path intoPath:tmp];
+        [[self _restClient] loadFile:path intoPath:tmpFileName];
     }
     return tree;
 }
@@ -273,6 +313,22 @@ static NSString * DOWNLOAD_CONFIG;
     return NO;
 }
 
+-(BOOL)bCacheFileExists:(NSString *) filename {
+    NSString *url = [self getURLForRemoteFile:filename];
+    return [self bCacheFileExitsForURL:url];
+}
+
+-(BOOL)bCacheFileExitsForURL:(NSString *) url {
+	NSString * cacheFileName = [FileManager getTempFileNameFromURL:url];
+
+	NSFileManager * fileManager = [NSFileManager defaultManager];
+	
+	if([fileManager fileExistsAtPath:cacheFileName]) {
+        return YES;
+    }
+    return NO;
+}
+
 #pragma mark DBRestClient
 
 - (DBRestClient*)_restClient {
@@ -286,23 +342,38 @@ static NSString * DOWNLOAD_CONFIG;
 
 #pragma mark DBRestClientDelegate methods
 
-/*
- - (void)restClient:(DBRestClient*)client loadedMetadata:(DBMetadata*)metadata {
- NSLog(@"loadedMeta");
- }
- 
- - (void)restClient:(DBRestClient*)client metadataUnchangedAtPath:(NSString*)path {
- 
- NSLog(@"Metadata unchanged!");
- }
- 
- - (void)restClient:(DBRestClient*)client loadMetadataFailedWithError:(NSError*)error {
- 
- NSLog(@"Error loading metadata: %@", error);
- }
- */
+-(void)restClient:(DBRestClient*)client loadedMetadata:(DBMetadata*)metadata {
+    NSFileManager * fileManager = [NSFileManager defaultManager];
+    NSDictionary *fileAttributes;
+    NSError *errorFile = nil;
 
-- (void)restClient:(DBRestClient*)client loadedFile:(NSString*)destPath{
+    fileAttributes = [fileManager attributesOfItemAtPath:_cacheFileName error:&errorFile];
+    if (errorFile == nil) {
+        NSDate * localFileDate = [fileAttributes objectForKey:NSFileModificationDate];
+        if ([[[metadata lastModifiedDate] laterDate:localFileDate] isEqual:localFileDate]) {
+            @try{
+                id<KdbTree> tree = [self readFileHelp:self._cacheFileName withPassword:self._password];
+                tree = nil;
+                [self._passwordViewController performSelector:@selector(fileOperationSuccess) withObject:nil];        
+            }@catch(NSException * exception){
+                [self._passwordViewController performSelector:@selector(fileOperationFailureWithException:) withObject:exception];
+            }
+            return;
+        }
+    }
+    [[self _restClient] loadFile:metadata.path intoPath:_tmpFileName];
+}
+ 
+-(void)restClient:(DBRestClient*)client metadataUnchangedAtPath:(NSString*)path {
+    // NSLog(@"Metadata unchanged!");
+}
+ 
+-(void)restClient:(DBRestClient*)client loadMetadataFailedWithError:(NSError*)error {
+    NSException *exception =  [NSException exceptionWithName:@"MetadataErrorWithUserInfo" reason:@"DownloadError" userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[error localizedDescription],@"error", nil]];
+    [self._passwordViewController performSelector:@selector(fileOperationFailureWithException:) withObject:exception];
+}
+
+-(void)restClient:(DBRestClient*)client loadedFile:(NSString*)destPath{
     [[NSFileManager defaultManager] removeItemAtPath:self._cacheFileName error:nil];
     [[NSFileManager defaultManager] moveItemAtPath:destPath toPath:self._cacheFileName error:nil];
     @try{
@@ -313,11 +384,12 @@ static NSString * DOWNLOAD_CONFIG;
 		[self._passwordViewController performSelector:@selector(fileOperationFailureWithException:) withObject:exception];
     }
 }
-- (void)restClient:(DBRestClient*)client loadProgress:(CGFloat)progress forFile:(NSString*)destPath {
+
+-(void)restClient:(DBRestClient*)client loadProgress:(CGFloat)progress forFile:(NSString*)destPath {
     //NSLog(@"Progress");
 }
 
-- (void)restClient:(DBRestClient*)client loadFileFailedWithError:(NSError*)error {
+-(void)restClient:(DBRestClient*)client loadFileFailedWithError:(NSError*)error {
     NSException *exception =  [NSException exceptionWithName:@"DownloadErrorWithUserInfo" reason:@"DownloadError" userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[error localizedDescription],@"error", nil]];
     [self._passwordViewController performSelector:@selector(fileOperationFailureWithException:) withObject:exception];
 }
