@@ -122,11 +122,11 @@
 	//set the footer;
 	UIView * container = [[UIView alloc]initWithFrame:CGRectMake(0,0,320,44)]; 
 	_ok = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	_ok.frame = CGRectMake(11,16,143,35); 
+	_ok.frame = CGRectMake(11,16,143,50); 
 	[_ok setTitle:NSLocalizedString(@"OK", @"OK") forState:UIControlStateNormal];
 	
 	_cancel = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	_cancel.frame = CGRectMake(165, 16, 143, 35);
+	_cancel.frame = CGRectMake(165, 16, 143, 50);
 	[_cancel setTitle:NSLocalizedString(@"Cancel", @"Cancel") forState:UIControlStateNormal];
 	
 	[container addSubview:_ok];
