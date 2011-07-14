@@ -55,7 +55,7 @@
 			groupView.navigationItem.title = filename;
 	}
 	
-	groupView.tabBarItem.image = [UIImage imageNamed:@"passwords.png"];
+	groupView.tabBarItem.image = [UIImage imageNamed:@"tab_key.png"];
 	groupView.tabBarItem.title = NSLocalizedString(@"Passwords", @"Passwords");
 	
 	//the search view controller
@@ -71,13 +71,13 @@
 	UINavigationController * nav3 = [[UINavigationController alloc]initWithRootViewController:optionView];
 	optionView.navigationItem.title = NSLocalizedString(@"Change Password", @"Change Password");
 	
-	optionView.tabBarItem.image = [UIImage imageNamed:@"options.png"]; 
+	optionView.tabBarItem.image = [UIImage imageNamed:@"tab_tools.png"]; 
 	optionView.tabBarItem.title = NSLocalizedString(@"Options", @"Options"); 
 	
 	
 	//a dummy view controller
 	UIViewController * dummy = [[UIViewController alloc]init];
-	dummy.tabBarItem.image = [UIImage imageNamed:@"files.png"];
+	dummy.tabBarItem.image = [UIImage imageNamed:@"tab_files.png"];
 	dummy.tabBarItem.title = NSLocalizedString(@"KDB Files", @"KDB Files");	
 	
 	//the tab bar

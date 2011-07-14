@@ -111,15 +111,15 @@
 		NSString * filename = [_files objectAtIndex:indexPath.row];
 		UIImageView * iv = cell.imageView;
 		if([filename hasSuffix:@KDB1_SUFFIX]){
-			iv.image = [UIImage imageNamed:@"kdb.png"];
+			iv.image = [UIImage imageNamed:@"ico_kdb.png"];
 			filename = [filename substringToIndex:[filename length]-4];
 			//cell.detailTextLabel.text = NSLocalizedString(@"KeePass 1.0",  @"KeePass 1.0");
 		}else if ([filename hasSuffix:@KDB2_SUFFIX]){
-			iv.image = [UIImage imageNamed:@"kdbx.png"];
+			iv.image = [UIImage imageNamed:@"ico_kdbx.png"];
 			filename = [filename substringToIndex:[filename length]-5];
 			//cell.detailTextLabel.text = NSLocalizedString(@"KeePass 2.0",  @"KeePass 2.0");
 		}else{
-			iv.image = [UIImage imageNamed:@"unknown.png"];
+			iv.image = [UIImage imageNamed:@"ico_unknown.png"];
 		}
 		cell.textLabel.text = filename;
 	}else { //remote files
@@ -131,7 +131,7 @@
             cell.editingAccessoryType =UITableViewCellEditingStyleNone;
         }
         else {
-            iv.image = [UIImage imageNamed:@"http.png"];
+            iv.image = [UIImage imageNamed:@"ico_http.png"];
         }
 		cell.textLabel.text = filename;
 	}

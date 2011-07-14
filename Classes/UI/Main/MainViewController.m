@@ -26,7 +26,7 @@
 	UINavigationItem * navItem = [[nav navigationBar].items objectAtIndex:0];
 	navItem.title = NSLocalizedString(@"KeePass Files", @"KeePass Files");
 	
-	fileView.tabBarItem.image = [UIImage imageNamed:@"files.png"];
+	fileView.tabBarItem.image = [UIImage imageNamed:@"tab_files.png"];
 	fileView.tabBarItem.title = NSLocalizedString(@"KDB Files", @"KDB Files");
 	
 	UIBarButtonItem * addButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:fileView action:@selector(addFile:)];
@@ -36,7 +36,7 @@
 	
 	//the about view
 	AboutViewController * aboutView = [[AboutViewController alloc]initWithStyle:UITableViewStyleGrouped];
-	aboutView.tabBarItem.image = [UIImage imageNamed:@"about.png"];
+	aboutView.tabBarItem.image = [UIImage imageNamed:@"tab_about.png"];
 	aboutView.tabBarItem.title = NSLocalizedString(@"About", @"About");
 	
 	//the tab bar

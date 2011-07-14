@@ -3,6 +3,8 @@
 *~.nib
 
 build/
+MyKeePass.xcodeproj/project.xcworkspace/
+MyKeePass.xcodeproj/xcuserdata/
 
 #user-specific
 *.pbxuser
